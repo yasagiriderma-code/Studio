@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Yasa Games</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #ddff00;
+                color: #111;
+            }
+            h1,h2,h3,h4,h5,h6,p {
+                margin: 0;
+                padding: 0;
+            }
+            main {
+                display: flex;
+                justify-content: center;
+                padding: 30px 20px;
+            }
+            .gamesGrid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 24px;
+                width: min(100%, 1200px);
+                justify-items: center;
+                align-items: start;
+            }
+            .gameCard {
+                background-color: #fff;
+                border-radius: 20px;
+                border: solid 5px black;
+                width: min(300px, 100%);
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .gameCard:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+            }
+            .information {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 16px;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .information img {
+                width: 100px;
+                height: auto;
+                border-radius: 20px;
+                flex-shrink: 0;
+                object-fit: cover;
+            }
+            .sub-information {
+                flex: 1;
+                text-align: left;
+            }
+            .sub-information h2 {
+                font-size: 1.3rem;
+                margin-bottom: 12px;
+            }
+            .tag {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .tag span {
+                display: inline-block;
+                padding: 10px 16px;
+                background-color: #000;
+                color: #fff;
+                border-radius: 20px;
+                font-size: 0.95rem;
+            }
+            .tag span.category {
+                background-color: #0066ff;
+            }
+            .buttonRow {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .buttonRow a {
+                display: inline-flex;
+                width: 130px;
+                height: 50px;
+            }
+            .playButton,
+            .downloadButton {
+                width: 100%;
+                height: 100%;
+                background-color: transparent;
+                background-size: 150%;
+                background-position: center;
+                background-repeat: no-repeat;
+                border: none;
+                cursor: pointer;
+            }
+            .playButton {
+                background-image: url(ui/play-button.png);
+            }
+            .downloadButton {
+                background-image: url(ui/apk-button.png);
+            }
+            .cardLink {
+                color: inherit;
+                text-decoration: none;
+            }
+            .errorMessage {
+                text-align: center;
+                color: #000;
+                font-weight: bold;
+            }
+            @media (max-width: 360px) {
+                main {
+                    padding: 20px 10px;
+                }
+                .gameCard {
+                    padding: 16px;
+                }
+                .information {
+                    gap: 12px;
+                }
+                .information img {
+                    width: 88px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div class="gamesGrid" id="gamesGrid"></div>
+        </main>
+        <script>
+            function createGameCard(game) {
+                const card = document.createElement('article');
+                card.className = 'gameCard';
+
+                const hasLink = game.link && game.link.toLowerCase() !== 'none';
+                const hasApk = game.apk && game.apk.toLowerCase() !== 'none';
+                const buttons = [];
+
+                if (hasLink) {
+                    buttons.push(`
+                        <a href="${game.link}" target="_blank" rel="noopener noreferrer">
+                            <button class="playButton" aria-label="Play ${game.name}"></button>
+                        </a>
+                    `);
+                }
+                if (hasApk) {
+                    buttons.push(`
+                        <a href="${game.apk}" target="_blank" rel="noopener noreferrer">
+                            <button class="downloadButton" aria-label="Download ${game.name} APK"></button>
+                        </a>
+                    `);
+                }
+
+                // Handle categories - if array, create separate spans; if string, create single span
+                let categoryHtml = '';
+                if (Array.isArray(game.category)) {
+                    categoryHtml = game.category.map(cat => `<span class="category">${cat}</span>`).join('');
+                } else {
+                    categoryHtml = `<span class="category">${game.category}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="information">
+                        <img src="${game.icon}" alt="${game.name} icon" />
+                        <div class="sub-information">
+                            <h2>${game.name}</h2>
+                            <div class="tag">
+                                <span class="version">${game.version}</span>
+                                ${categoryHtml}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="buttonRow">
+                        ${buttons.join('')}
+                    </div>
+                `;
+                return card;
+            }
+
+            function showError(message) {
+                const grid = document.getElementById('gamesGrid');
+                grid.innerHTML = `<p class="errorMessage">${message}</p>`;
+            }
+
+            async function loadGameCards() {
+                try {
+                    const response = await fetch('games.json');
+                    if (!response.ok) throw new Error('Tidak dapat memuat data game');
+                    const games = await response.json();
+                    const grid = document.getElementById('gamesGrid');
+                    const gameCards = Object.values(games).map(createGameCard);
+                    if (gameCards.length === 0) {
+                        showError('Belum ada game tersedia.');
+                        return;
+                    }
+                    grid.append(...gameCards);
+                } catch (error) {
+                    console.error(error);
+                    showError('Gagal memuat game. Pastikan games.json tersedia.');
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', loadGameCards);
+        </script>
+    </body>
+</html>
