@@ -1,32 +1,36 @@
 {
     "khodam-rebellion": {
         "name": "Khodam Rebellion",
-        "version": "v1.18.35",
+        "author": "Yasa",
+        "version": "v1.26",
         "category": ["RPG", "Card"],
         "link": "https://yasagiriderma579.github.io/KHODAM---Rebellion/",
         "icon": "game/khodam-rebellion/icon.png"
     },
     "space-time": {
         "name": "Space Time",
-        "version": "v1.0.0",
+        "author": "Yasa",
+        "version": "v1.0",
         "category": "Arcade",
         "link": "https://yasagiriderma-code.github.io/Space-Time/",
-        "apk": "game/space-time/Space_Time_v1_0_0.apk",
+        "apk": "game/space-time/SpaceTime-v1_2.apk",
         "icon": "game/space-time/icon.png"
     },
     "si-rizky": {
         "name": "Si Rizky",
-        "version": "v1.0.0",
+        "author": ["Rizky", "Yasa"],
+        "version": "v1.0",
         "category": "Arcade",
-        "apk": "game/si-rizky/SiRisky-v1_0_0.apk",
+        "apk": "game/si-rizky/SiRizky-v1_0.apk",
         "icon": "game/si-rizky/icon.png"
     },
     "mancing": {
         "name": "Mancing",
-        "version": "v1.0.0",
+        "author": "Yasa",
+        "version": "v1.0",
         "category": "Casual",
         "link": "https://yasagiriderma-code.github.io/Mancing/",
-        "apk": "game/mancing/Mancing_v1_0_0.apk",
+        "apk": "game/mancing/Mancing-v1_0.apk",
         "icon": "game/mancing/icon.png"
     }
 }

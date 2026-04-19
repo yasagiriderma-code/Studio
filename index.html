@@ -65,7 +65,13 @@
             }
             .sub-information h2 {
                 font-size: 1.3rem;
-                margin-bottom: 12px;
+                margin-bottom: 8px;
+            }
+            .sub-information .author {
+                margin: 0 0 12px;
+                font-size: 0.95rem;
+                color: #444;
+                font-style: italic;
             }
             .tag {
                 display: flex;
@@ -148,6 +154,8 @@
                 const hasLink = game.link && game.link.toLowerCase() !== 'none';
                 const hasApk = game.apk && game.apk.toLowerCase() !== 'none';
                 const buttons = [];
+                const authorText = Array.isArray(game.author) ? game.author.join(', ') : game.author;
+                const authorHtml = authorText ? `<p class="author">by ${authorText}</p>` : '';
 
                 if (hasLink) {
                     buttons.push(`
@@ -177,6 +185,7 @@
                         <img src="${game.icon}" alt="${game.name} icon" />
                         <div class="sub-information">
                             <h2>${game.name}</h2>
+                            ${authorHtml}
                             <div class="tag">
                                 <span class="version">${game.version}</span>
                                 ${categoryHtml}
